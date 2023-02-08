@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <title>播放音乐</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <audio src="./AntiGeneralDropBattle.mp3"></audio>
+    <button class="playPause">播放</button>
+    <button class="prev">上一首</button>
+    <button class="next">下一首</button>
+    <div>当前时间: <span class="currentTime"></span></div>
+    <div>总时间: <span class="duration"></span></div>
+    <div>
+        <input type="text" id="progress"><button class="jumpTo">跳到此处</button>
+    </div>
+    <button class="volumeUp">声音增加</button>
+    <button class="volumeDown">声音减少</button>
+    <script>
+        // 这里是歌名数组
+        var mp3 = ['AntiGeneralDropBattle', '胡夏下雨天', '李荣浩耳朵','李荣浩梁咏琪紫荆花盛开','李荣浩老街','李荣浩脱胎换骨','盲婚哑嫁陈奕迅','青春舞曲龚爽','陀飞轮陈奕迅','真高兴蒋亮','周深化身孤岛的鲸','周深生活总该迎着光亮','周深触不可及']
+        // 这个是数组的序列号
+        var currentIndex = 0
+        // 这里打印一下数组的长度
+        console.log(mp3.length);
+        var playing = false
+        var oAudio = document.querySelector('audio')
+        document.querySelector('.playPause').onclick = function() {
+            if (playing) {
+                oAudio.pause()
+                this.textContent = '播放'
+            } else {
+                oAudio.play()
+                this.textContent = '暂停'
+            }
+            playing = !playing
+        }
+        document.querySelector('.prev').onclick = function() {
+            currentIndex--;
+            // 这里是判断当在放第1首歌曲的时候再按上一曲的时候 直接跳到最后一曲(数组长度减1是数组下标)
+            if (currentIndex < 0) {
+                currentIndex = mp3.length-1;
+            }
+            var name = "./" + mp3[currentIndex] + ".mp3";
+            oAudio.src = name
+            // 这里确保按完上一曲后自动播放
+            oAudio.play()
+        }
+        document.querySelector('.next').onclick = function() {
+            currentIndex++;
+            // 这里判断当在放最后一曲的时候再按下一曲 直接跳到第一曲(数组长度减1是数组下标)
+            if (currentIndex > mp3.length-1) {
+                currentIndex = 0;
+            }
+            var name = "./" + mp3[currentIndex] + ".mp3";
+            oAudio.src = name
+            // 这里确保按完下一曲后自动播放
+            oAudio.play()
+        }
+        oAudio.ontimeupdate = function() {
+            var ct = oAudio.currentTime
+            var ctm = Math.floor(ct / 60)
+            var cts = Math.floor(ct % 60)
+            document.querySelector('.currentTime').textContent = ctm + ":" + cts
+            var dt = oAudio.duration
+            var dtm = Math.floor(dt / 60)
+            var dts = Math.floor(dt % 60)
+            document.querySelector('.duration').textContent = dtm + ":" + dts
+            // 这里是增加一个判断 如果播放时间到的时间等于整首歌的时间 那么执行下一首的功能
+            if (ct==dt){
+                currentIndex++;
+            // 这里判断当在放最后一曲的时候再按下一曲 直接跳到第一曲(数组长度减1是数组下标)
+            if (currentIndex > mp3.length-1) {
+                currentIndex = 0;
+            }
+            var name = "./" + mp3[currentIndex] + ".mp3";
+            oAudio.src = name
+            // 这里确保按完下一曲后自动播放
+            oAudio.play() }
+        }
+        document.querySelector('.jumpTo').onclick = function() {
+            var p = parseInt(document.querySelector('#progress').value)
+            if (p < 0) { p = 0 }
+            if (p > 100) { p = 100 }
+            var ct = p / 100 * oAudio.duration;
+            oAudio.currentTime = ct
+            document.querySelector('#progress').value = ''
+            
+        }
+        document.querySelector('.volumeUp').onclick = function() {
+            var volume = oAudio.volume;
+            volume += 0.1
+            if (volume > 1) {
+                volume = 1
+            }
+            oAudio.volume = volume
+        }
+        document.querySelector('.volumeDown').onclick = function() {
+            var volume = oAudio.volume;
+            volume -= 0.1
+            if (volume < 0) {
+                volume = 0
+            }
+            oAudio.volume = volume
+        }
+    </script>
+</body>
+</html>
