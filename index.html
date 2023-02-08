@@ -2,35 +2,84 @@
 <html lang="zh-hans">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <title>播放音乐</title>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
+        @media screen and (max-width: 575px){
+            html{
+                font-size: 30px;
+            }
+        }
+        button{
+            width: 4rem;
+            height: 2rem;
+            font-size:20px;
+        }
+        input{
+            width: 4rem;
+            height: 2rem;
+            font-size:30px;
+        }
+        @media screen and (min-width: 576px){
+            html{
+                font-size: 30px;
+            }
+        }
+        @media screen and (min-width: 768px){
+            html{
+                font-size: 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <audio src="./AntiGeneralDropBattle.mp3"></audio>
-    <button class="playPause">播放</button>
+    <audio src="./AntiGeneralDropBattle.mp3" preload="auto"></audio>
+    <button class="playPause" id="bt1">播放</button>
     <button class="prev">上一首</button>
     <button class="next">下一首</button>
+    <!-- 加入单曲循环按钮 -->
+    <button class="round">单曲循环</button>
+    <!-- 加入列表循环按钮 -->
+    <button class="listround">列表循环</button>
     <div>当前时间: <span class="currentTime"></span></div>
     <div>总时间: <span class="duration"></span></div>
+    <div id="name"></div>
+    <!-- 这里显示一个列表循环模式 最开始是默认的 -->
+    <div id="mode">列表循环模式</div>
     <div>
-        <input type="text" id="progress"><button class="jumpTo">跳到此处</button>
+        <input type="text" id="progress"><button class="jumpTo">跳到输入的秒数地方</button>
     </div>
     <button class="volumeUp">声音增加</button>
     <button class="volumeDown">声音减少</button>
     <script>
         // 这里是歌名数组
         var mp3 = ['AntiGeneralDropBattle', '胡夏下雨天', '李荣浩耳朵','李荣浩梁咏琪紫荆花盛开','李荣浩老街','李荣浩脱胎换骨','盲婚哑嫁陈奕迅','青春舞曲龚爽','陀飞轮陈奕迅','真高兴蒋亮','周深化身孤岛的鲸','周深生活总该迎着光亮','周深触不可及']
+        // 这里先定义一个false 后面用来判断是否单曲循环模式 这里一开始是否的
+        var flag=false
         // 这个是数组的序列号
         var currentIndex = 0
+        // 这里显示一下第一首歌的歌名
+        document.getElementById("name").innerHTML=mp3[currentIndex];
         // 这里打印一下数组的长度
         console.log(mp3.length);
         var playing = false
         var oAudio = document.querySelector('audio')
+        // 这里是单曲循环模式按钮按下执行的函数
+        document.querySelector('.round').onclick = function(){
+            console.log('okokokok')
+            // 这里把上面的标签设置为true
+            flag=true
+            // 这里先把显示的字设置为单曲循环模式
+            document.getElementById("mode").innerHTML='单曲循环模式'
+        }
+        // 这里是列表循环按钮按下执行的函数
+        document.querySelector('.listround').onclick = function(){
+            console.log('listlistlist')
+            // 这里把标签设置为false
+            flag=false
+            // 这里先把显示的字显示为列表循环模式
+            document.getElementById("mode").innerHTML='列表循环模式'
+        }
         document.querySelector('.playPause').onclick = function() {
             if (playing) {
                 oAudio.pause()
@@ -49,6 +98,8 @@
             }
             var name = "./" + mp3[currentIndex] + ".mp3";
             oAudio.src = name
+            console.log(name)
+            document.getElementById("name").innerHTML=mp3[currentIndex];
             // 这里确保按完上一曲后自动播放
             oAudio.play()
         }
@@ -60,36 +111,59 @@
             }
             var name = "./" + mp3[currentIndex] + ".mp3";
             oAudio.src = name
+            document.getElementById("name").innerHTML=mp3[currentIndex];
             // 这里确保按完下一曲后自动播放
             oAudio.play()
         }
         oAudio.ontimeupdate = function() {
             var ct = oAudio.currentTime
+            // console.log(ct)
             var ctm = Math.floor(ct / 60)
             var cts = Math.floor(ct % 60)
+           
             document.querySelector('.currentTime').textContent = ctm + ":" + cts
             var dt = oAudio.duration
             var dtm = Math.floor(dt / 60)
             var dts = Math.floor(dt % 60)
             document.querySelector('.duration').textContent = dtm + ":" + dts
-            // 这里是增加一个判断 如果播放时间到的时间等于整首歌的时间 那么执行下一首的功能
-            if (ct==dt){
-                currentIndex++;
-            // 这里判断当在放最后一曲的时候再按下一曲 直接跳到第一曲(数组长度减1是数组下标)
-            if (currentIndex > mp3.length-1) {
-                currentIndex = 0;
+            // 这里是一个判断 判断当标签为false并且播放时间等于总时间的时候
+            if (flag==false & ct==dt ){
+                // 这里把数组的下标加1
+                
+                    currentIndex++;
+                    // 这里判断当在放最后一曲的时候再按下一曲 直接跳到第一曲(数组长度减1是数组下标)
+                    if (currentIndex > mp3.length-1) {
+                        currentIndex = 0;
+                    }
+                    // 这里得到 一个数组下标加1后 的音频播放地址
+                    var name = "./" + mp3[currentIndex] + ".mp3";
+                    // 这里把音频播放地址赋给原地址
+                    oAudio.src = name
+                    // 这里把歌名显示为新的歌名
+                    document.getElementById("name").innerHTML=mp3[currentIndex];
+                    // 这里播放
+                    oAudio.play() 
+                }
+            // 这里判断当上面的标签为true并且播放时长等于总时长的时候
+            else if(flag==true & ct==dt){
+                // 这里把播放的光标时间设置为最开始的0
+                oAudio.currentTime=0
+                    // 这里再播放歌曲
+                oAudio.play() 
             }
-            var name = "./" + mp3[currentIndex] + ".mp3";
-            oAudio.src = name
-            // 这里确保按完下一曲后自动播放
-            oAudio.play() }
+            
         }
+        // 这里是跳到秒数的按钮执行的函数
         document.querySelector('.jumpTo').onclick = function() {
+            // 这里得到输入的值
             var p = parseInt(document.querySelector('#progress').value)
-            if (p < 0) { p = 0 }
-            if (p > 100) { p = 100 }
-            var ct = p / 100 * oAudio.duration;
+            // console.log(oAudio.duration)
+            console.log(p)
+            // 这里把输入的值赋给ct
+            var ct = p ;
+            // 这里把ct赋给光标所在时间 就可以跳到那个时间
             oAudio.currentTime = ct
+            // 这里再把输入值的输入框清空
             document.querySelector('#progress').value = ''
             
         }
