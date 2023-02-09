@@ -5,28 +5,65 @@
     <meta name="viewport" content="width=device-width">
     <title>播放音乐</title>
     <style>
+        /* 这是手机的媒体查询 */
         @media screen and (max-width: 575px){
+            /* 这里是最基础的文字大小 后面用rem这单位就是这里文字大小的多少倍 */
             html{
-                font-size: 30px;
+                font-size: 30px;            
             }
         }
-        button{
-            width: 4rem;
-            height: 2rem;
-            font-size:20px;
+        body {
+        /* 这里是背景图片 */
+        background-image:url('bg666.png'); 
+        
         }
+        div{
+            /* 这里是网页里面的除了按钮之外的文字颜色 */
+            color: #fff;
+        }
+        /* 这里是酷炫按钮效果 */
+        button{
+            /* width: 4rem; */
+            /* height: 2rem; */
+            /* font-size:20px; */
+            width: fit-content;
+            padding: 25px 30px;
+            color: #03e9f4;
+            font-size: 24px;
+            text-transform: uppercase;
+            transition: 0.5s;
+            letter-spacing: 4px;
+            cursor: pointer;
+            background-color: #000;
+            border-color:#fff;
+            
+        }
+        /* 这里是鼠标移动到按钮上面时候的酷炫效果 */
+        button:hover{
+            background-color: #03e9f4;
+            color: #050801;
+            box-shadow: 0 0 5px #03e9f4,
+                        0 0 25px #03e9f4,
+                        0 0 50px #03e9f4,
+                        0 0 200px #03e9f4;
+        }
+        /* 这里是输入窗口的大小设置 用了等比例缩放单位rem */
         input{
             width: 4rem;
             height: 2rem;
             font-size:30px;
         }
+        /* 这里是平板等设备的媒体查询 */
         @media screen and (min-width: 576px){
             html{
+                /* 这里是最基础的文字大小 后面用rem这单位就是这里文字大小的多少倍 */
                 font-size: 30px;
             }
         }
+        /* 这里是电脑显示屏等设备的媒体查询 */
         @media screen and (min-width: 768px){
             html{
+                /* 这里是最基础的文字大小 后面用rem这单位就是这里文字大小的多少倍 */
                 font-size: 30px;
             }
         }
